@@ -85,7 +85,7 @@
     svg{
       width:100%;
       height:100%;
-      display:block; /* tránh vài case SVG render “lúc được lúc không” */
+      display:block;
     }
 
     .guide{
@@ -198,19 +198,6 @@
       color:#94a3b8;
       font-weight:800;
     }
-    .badge{
-      display:inline-block;
-      font-size:10px;
-      font-weight:900;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--soft);
-      color:var(--muted);
-      background:#f8fafc;
-      margin-top:6px;
-    }
-    .badge.conductor{ border-color:rgba(22,163,74,.35); color:var(--green); background:rgba(22,163,74,.06); }
-    .badge.insulator{ border-color:rgba(239,68,68,.35); color:var(--red); background:rgba(239,68,68,.06); }
 
     .results{
       margin-top:12px;
@@ -390,9 +377,8 @@
               <path d="M 80 -10 L 120 -50" stroke="var(--soft)" stroke-width="2" fill="none" />
             </g>
 
-            <!-- BATTERY (đã “khớp” đúng 2 terminal y=127 & y=223) -->
+            <!-- BATTERY -->
             <g transform="translate(100,175)" filter="url(#glow)">
-              <!-- lead/connector points đúng vào terminal -->
               <circle cx="0" cy="-48" r="6" fill="#0f172a"/>
               <circle cx="0" cy="48" r="6" fill="#0f172a"/>
 
@@ -403,9 +389,9 @@
               <text x="0" y="28" text-anchor="middle" font-size="22" font-weight="900" fill="#0f172a">-</text>
             </g>
 
-            <!-- BULB (đã bỏ rotate(90) để khớp đúng 2 terminal y=155 & y=195) -->
+            <!-- BULB (removed base/socket) -->
             <g id="bulbGroup" transform="translate(520,175)">
-              <!-- connector points đúng vào terminal -->
+              <!-- connector points -->
               <circle cx="0" cy="-20" r="6" fill="#0f172a"/>
               <circle cx="0" cy="20" r="6" fill="#0f172a"/>
 
@@ -419,11 +405,6 @@
               <!-- filament -->
               <path id="bulbFilament" d="M -10 6 C -7 -7, 7 -7, 10 6"
                     fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
-
-              <!-- base (nằm dưới, nhưng không ảnh hưởng điểm nối dây) -->
-              <rect x="-11" y="26" width="22" height="34" rx="6" fill="#cbd5e1" stroke="#64748b" stroke-width="3"/>
-              <line x1="-11" y1="38" x2="11" y2="38" stroke="#64748b" stroke-width="3"/>
-              <line x1="-11" y1="50" x2="11" y2="50" stroke="#64748b" stroke-width="3"/>
             </g>
           </svg>
 
@@ -505,6 +486,7 @@
       return placedItem && placedItem.type === 'conductor' && !isSwitchClosed;
     }
 
+    // UPDATED: remove CONDUCTOR/INSULATOR badges in Material Box
     function renderItems(){
       itemsGrid.innerHTML = '';
       ITEMS.forEach(it => {
@@ -516,7 +498,6 @@
         btn.innerHTML = `
           <div class="icon" aria-hidden="true" style="font-size:20px">${it.icon}</div>
           <div style="font-weight:900;color:#334155;text-align:center">${it.name}</div>
-          <div class="badge ${it.type}">${it.type.toUpperCase()}</div>
           <div class="meta">${it.desc}</div>
         `;
 
@@ -554,7 +535,6 @@
         gap.innerHTML = `
           <div>
             <div style="font-weight:900">${placedItem.icon} ${placedItem.name}</div>
-            <div class="badge ${placedItem.type}">${placedItem.type.toUpperCase()}</div>
             <small>(Click to remove)</small>
           </div>
         `;
@@ -589,7 +569,7 @@
         results.classList.add('warn');
         results.innerHTML = `
           <h3>Circuit is Open!</h3>
-          <p>The object is a <b>CONDUCTOR</b>, but the <b>Switch</b> is open. Close it to test.</p>
+          <p>The object can conduct, but the <b>Switch</b> is open. Close it to test.</p>
         `;
         return;
       }
@@ -598,13 +578,13 @@
         results.classList.add('good');
         results.innerHTML = `
           <h3>Bulb Shines!</h3>
-          <p><b>${placedItem.name}</b> is a <b style="color:var(--green)">CONDUCTOR</b> — electricity passes through.</p>
+          <p><b>${placedItem.name}</b> lets electricity pass through.</p>
         `;
       } else {
         results.classList.add('bad');
         results.innerHTML = `
           <h3>Bulb does NOT Shine.</h3>
-          <p><b>${placedItem.name}</b> is an <b style="color:var(--red)">INSULATOR</b> — it blocks electricity.</p>
+          <p><b>${placedItem.name}</b> blocks electricity.</p>
         `;
       }
     }
