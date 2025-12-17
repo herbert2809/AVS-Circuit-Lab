@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simple Circuit – One File</title>
+
+<style>
+  body{
+    margin:0;
+    font-family:system-ui,Segoe UI,Arial;
+    background:#f8fafc;
+    color:#0f172a;
+  }
+  header{
+    background:#fff;
+    border-bottom:1px solid #e2e8f0;
+    padding:12px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  button{
+    padding:8px 14px;
+    border-radius:999px;
+    border:1px solid #cbd5e1;
+    background:#fff;
+    font-weight:700;
+    cursor:pointer;
+  }
+  button:hover{ border-color:#64748b }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:16px;
+  }
+
+  .panel{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:20px;
+    padding:16px;
+    box-shadow:0 10px 22px rgba(15,23,42,.06);
+  }
+
+  svg{ width:100%; height:auto }
+
+  .result{
+    margin-top:12px;
+    padding:12px 16px;
+    border-radius:16px;
+    background:#f1f5f9;
+    font-weight:600;
+  }
+  .on{ background:#f0fdf4; color:#166534 }
+  .off{ background:#fef2f2; color:#991b1b }
+</style>
+</head>
+
+<body>
+
+<header>
+  <strong>⚡ Simple Circuit (1 file)</strong>
+  <button id="switchBtn">Switch: OPEN</button>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+
+    <!-- SVG CIRCUIT -->
+    <svg viewBox="0 0 600 350">
+
+      <!-- WIRES -->
+      <path d="M100 80 H200" stroke="#334155" stroke-width="6" fill="none" />
+      <path d="M300 80 H500" stroke="#334155" stroke-width="6" fill="none" />
+      <path d="M100 80 V260" stroke="#334155" stroke-width="6" fill="none" />
+      <path d="M500 80 V260" stroke="#334155" stroke-width="6" fill="none" />
+      <path d="M100 260 H500" stroke="#334155" stroke-width="6" fill="none" />
+
+      <!-- SWITCH -->
+      <g id="switch" style="cursor:pointer">
+        <circle cx="200" cy="80" r="5" fill="#0f172a"/>
+        <circle cx="300" cy="80" r="5" fill="#0f172a"/>
+        <line id="switchBlade"
+              x1="200" y1="80" x2="300" y2="80"
+              stroke="#ef4444" stroke-width="8"
+              stroke-linecap="round"
+              transform="rotate(-25 200 80)"/>
+        <text x="250" y="40" text-anchor="middle" font-size="12" font-weight="700">
+          SWITCH
+        </text>
+      </g>
+
+      <!-- BATTERY -->
+      <g transform="translate(100,170)">
+        <rect x="-24" y="-40" width="48" height="80" rx="6"
+              fill="#facc15" stroke="#334155" stroke-width="4"/>
+        <text x="0" y="-10" text-anchor="middle" font-weight="700">+</text>
+        <text x="0" y="26" text-anchor="middle" font-weight="700">-</text>
+      </g>
+
+      <!-- BULB -->
+      <g id="bulb" transform="translate(500,170)">
+        <circle id="bulbGlow" cx="0" cy="0" r="36"
+                fill="#fde047" opacity="0"/>
+        <circle cx="0" cy="0" r="26"
+                fill="#e2e8f0" stroke="#94a3b8" stroke-width="3"/>
+        <path id="filament"
+              d="M-8 4 C-4 -6,4 -6,8 4"
+              fill="none" stroke="#94a3b8" stroke-width="3"/>
+      </g>
+
+    </svg>
+
+    <div id="result" class="result off">
+      Circuit open – bulb is OFF
+    </div>
+  </div>
+</div>
+
+<script>
+  let switchClosed = false;
+
+  const btn = document.getElementById('switchBtn');
+  const blade = document.getElementById('switchBlade');
+  const glow = document.getElementById('bulbGlow');
+  const filament = document.getElementById('filament');
+  const result = document.getElementById('result');
+
+  function render(){
+    if(switchClosed){
+      blade.setAttribute(
+        'transform',
+        'rotate(0 200 80)'
+      );
+      glow.setAttribute('opacity','0.3');
+      filament.setAttribute('stroke','#f59e0b');
+      btn.textContent = 'Switch: CLOSED';
+      result.textContent = 'Circuit closed – bulb is ON';
+      result.className = 'result on';
+    }else{
+      blade.setAttribute(
+        'transform',
+        'rotate(-25 200 80)'
+      );
+      glow.setAttribute('opacity','0');
+      filament.setAttribute('stroke','#94a3b8');
+      btn.textContent = 'Switch: OPEN';
+      result.textContent = 'Circuit open – bulb is OFF';
+      result.className = 'result off';
+    }
+  }
+
+  btn.onclick = () => {
+    switchClosed = !switchClosed;
+    render();
+  };
+
+  render();
+</script>
+
+</body>
+</html>
